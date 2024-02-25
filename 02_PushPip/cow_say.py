@@ -37,8 +37,15 @@ argparser.add_argument('-l', '--list',
                        help="Show a list of cows. (True/False)"
                        )
 
+argparser.add_argument('-n', '--none', 
+                       default=False,
+                       nargs='?',
+                       action = 'store',
+                       help="Disable text wrapping."
+                       )
+
 args = argparser.parse_args()
 if args.list:
     print(list_cows())
 else:
-    print(cowsay(args.message, eyes=args.eyes, cow=args.file))
+    print(cowsay(args.message, eyes=args.eyes, cow=args.file, wrap_text=args.none))
