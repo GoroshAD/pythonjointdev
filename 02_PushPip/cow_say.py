@@ -24,21 +24,19 @@ argparser.add_argument('-e', '--eyes',
                         )
 
 argparser.add_argument('-f', '--file', 
-                       default="www",
+                       default="default",
                        nargs='?',
                        action = 'store',
                        help="Custom cow-file."
                        )
 
 argparser.add_argument('-l', '--list', 
-                       default=False,
                        nargs='?',
                        action = 'store',
                        help="Show a list of cows. (True/False)"
                        )
 
 argparser.add_argument('-n', '--none', 
-                       default=False,
                        nargs='?',
                        action = 'store',
                        help="Disable text wrapping."
@@ -58,9 +56,24 @@ argparser.add_argument('-W', '--width',
                        help="Text width."
                        )
 
+presets = argparser.add_argument_group("presets").add_mutually_exclusive_group()
+list_of_stages = ["Borg mode", "dead", "greedy", "paranoia", "stoned", "tired", "wired", "youthful"]
+for i in list_of_stages:
+    if i == "Borg mode":
+        presets.add_argument('-b', 
+                     action = 'store_true',
+                     help="Borg mode"
+                     )
+    else:
+        presets.add_argument(f'-{i[0]}', 
+                        action = 'store_true',
+                        help=i
+                        )
+
 args = argparser.parse_args()
+preset = ''.join(i for i in "bdgpstwy" if getattr(args, i))
 if args.list:
     print(list_cows())
 else:
-    print(cowsay(args.message, eyes=args.eyes, cow=args.file, 
-                 wrap_text=args.none, tongue=args.tongue, width=args.width))
+    print(cowsay(args.message, eyes=args.eyes, cow=args.file, wrap_text=args.none, 
+                 tongue=args.tongue, width=args.width, preset=preset))
