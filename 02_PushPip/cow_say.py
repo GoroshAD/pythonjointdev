@@ -1,4 +1,4 @@
-from cowsay import cowsay
+from cowsay import cowsay, list_cows
 from argparse import ArgumentParser
 
 argparser = ArgumentParser(
@@ -30,5 +30,15 @@ argparser.add_argument('-f', '--file',
                        help="Custom cow-file."
                        )
 
+argparser.add_argument('-l', '--list', 
+                       default=False,
+                       nargs='?',
+                       action = 'store',
+                       help="Show a list of cows. (True/False)"
+                       )
+
 args = argparser.parse_args()
-print(cowsay(args.message, eyes=args.eyes, cow=args.file))
+if args.list:
+    print(list_cows())
+else:
+    print(cowsay(args.message, eyes=args.eyes, cow=args.file))
