@@ -10,11 +10,11 @@ argparser = ArgumentParser(
                     )
 
 argparser.add_argument('message', 
-                    default="Hello there!",
-                    nargs='?',
-                    action='store',
-                    help="Cow's message."
-                    )
+                        default="Hello there!",
+                        nargs='?',
+                        action='store',
+                        help="Cow's message."
+                        )
 
 argparser.add_argument('-e', '--eyes', 
                         default='oo',
@@ -44,8 +44,15 @@ argparser.add_argument('-n', '--none',
                        help="Disable text wrapping."
                        )
 
+argparser.add_argument('-T', '--tongue', 
+                       default='  ',
+                       nargs='?',
+                       action = 'store',
+                       help="Tongue-string."
+                       )
+
 args = argparser.parse_args()
 if args.list:
     print(list_cows())
 else:
-    print(cowsay(args.message, eyes=args.eyes, cow=args.file, wrap_text=args.none))
+    print(cowsay(args.message, eyes=args.eyes, cow=args.file, wrap_text=args.none, tongue=args.tongue))
