@@ -51,8 +51,16 @@ argparser.add_argument('-T', '--tongue',
                        help="Tongue-string."
                        )
 
+argparser.add_argument('-W', '--width', 
+                       default=40,
+                       nargs='?',
+                       action = 'store',
+                       help="Text width."
+                       )
+
 args = argparser.parse_args()
 if args.list:
     print(list_cows())
 else:
-    print(cowsay(args.message, eyes=args.eyes, cow=args.file, wrap_text=args.none, tongue=args.tongue))
+    print(cowsay(args.message, eyes=args.eyes, cow=args.file, 
+                 wrap_text=args.none, tongue=args.tongue, width=args.width))
