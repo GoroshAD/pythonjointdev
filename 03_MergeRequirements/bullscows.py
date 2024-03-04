@@ -1,4 +1,6 @@
 from random import choice
+from argparse import ArgumentParser
+from urllib.request import urlopen
 
 def bullscows(guess: str, secret: str) -> (int, int):
     bulls, cows = 0, 0
@@ -12,21 +14,48 @@ def bullscows(guess: str, secret: str) -> (int, int):
     return (bulls, cows)
 
 def gameplay(ask: callable, inform: callable, words:list[str]) -> int:
-    secret = random.choice(words)
+    secret = choice(words)
     attempts_at_all = 0
-    attempt = ""
-    while attempt != secret:
-        attempt = ask("Введите слово: ", words)
+    guess = ""
+    while guess != secret:
+        guess = ask("Введите слово: ", words)
         attempts_at_all += 1
+        b, c = bullscows(guess, secret)
         inform("Быки: {}, Коровы: {}", b, c)
     return attempts_at_all
 
 def ask(prompt: str, valid: list[str]=None) -> str:
-    attempt = input(prompt)
+    guess = input(prompt)
     if valid is not None:
-        while attempt not in valid:
-            attempt = input(prompt)
-    return attempt
+        while guess not in valid:
+            guess = input(prompt)
+    return guess
 
 def inform(format_string: str, bulls: int, cows: int) -> None:
     print(format_string.format(bulls, cows))
+
+parser = ArgumentParser(description = 
+                        """
+                        Module-game bulls and cows.
+                        """
+                        )
+parser.add_argument('dictionary',
+                    help="Dictionary with the words, that are used for this game."
+                    )
+parser.add_argument('length',
+                    nargs='?',
+                    default=5,
+                    type=int,
+                    help="The length of the words in the game."
+                    )
+args = parser.parse_args()
+words = []
+try:
+    with open(args.dictionary) as file:
+        words = file.read().split()
+except:
+    with urlopen(args.dictionary) as file:
+        words = file.read().decode('utf-8').split()
+words = list(filter(lambda x: len(x) == args.length, words))
+print(gameplay(ask, inform, words))
+
