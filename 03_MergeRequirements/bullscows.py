@@ -1,7 +1,8 @@
 from random import choice
 from argparse import ArgumentParser
 from urllib.request import urlopen
-from cowsay import cowsay, list_cows
+from cowsay import cowsay, list_cows, read_dot_cow
+from io import StringIO
 
 def bullscows(guess: str, secret: str) -> (int, int):
     bulls, cows = 0, 0
@@ -26,13 +27,28 @@ def gameplay(ask: callable, inform: callable, words:list[str]) -> int:
     return attempts_at_all
 
 def ask(prompt: str, valid: list[str]=None) -> str:
-    tmp_cow = choice(list_cows())
-    print(cowsay(prompt, cow=tmp_cow))
+    tmp_cow = read_dot_cow(StringIO("""$the_cow = <<EOC;
+   $thoughts
+    $thoughts
+         ______________
+       /                \\
+       |                |
+       |   \__    __/   |
+       |    []\  /[]    |
+       \__            __/
+          \    /\    /
+           \        /
+           |/\/\/\/\|
+
+           |/\/\/\/\|
+           \________/
+
+EOC"""))
+    print(cowsay(prompt, cowfile=tmp_cow))
     guess = input()
     if valid is not None:
         while guess not in valid:
-            tmp_cow = choice(list_cows())
-            print(cowsay(prompt, cow=tmp_cow))
+            print(cowsay(prompt, cowfile=tmp_cow))
             guess = input()
     return guess
 
