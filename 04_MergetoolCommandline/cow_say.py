@@ -1,5 +1,5 @@
 import cmd, shlex
-from cowsay import list_cows, make_bubble
+from cowsay import list_cows, make_bubble, cowsay
 
 class Cowsay(cmd.Cmd):
     """
@@ -22,8 +22,15 @@ class Cowsay(cmd.Cmd):
         Usage: make_bubble text TEXT
         """
         args = shlex.split(args)
-        print(dict(zip(args[::2], args[1::2])))
         print(make_bubble(**dict(zip(args[::2], args[1::2]))))
+
+    def do_cowsay(self, args):
+        """
+        Print a cow with its message.
+        Usage: cowsay message MESSAGE [cow COW] [eyes EYES] [tongue TONGUE]
+        """
+        args = shlex.split(args)
+        print(cowsay(**dict(zip(args[::2], args[1::2])))) 
 
     def do_EOF(self, args):
         """
