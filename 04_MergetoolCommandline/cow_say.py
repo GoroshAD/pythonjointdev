@@ -7,7 +7,11 @@ class Cowsay(cmd.Cmd):
     in the command line.
     """
     prompt = "=)"
-    _text = "text"
+    text = "text"
+    cow = list_cows()
+    eyes = ["OO", "oO", "Oo", "oo", "..", "0O", "xx", "--", "TT", "==", "++", "$$", "::", "()", "~~"]
+    tongue = [" U", "U ", "# ", " #", "| ", " |", " /", "/ ", "\ "]
+    attributes = ["message", "cow", "eyes", "tongue"]
 
     def do_list_cows(self, args):
         """
@@ -41,8 +45,20 @@ class Cowsay(cmd.Cmd):
         print(cowthink(**dict(zip(args[::2], args[1::2]))))
 
     def complete_make_bubble(self, text, line, begidx, endidx):
-        if self._text.startswith(text):
-            return [self._text]
+        if self.text.startswith(text):
+            return [self.text]
+
+    def complete_cowsay(self, text, line, begidx, endidx):
+        tmp = shlex.split(line)[-2 if text else -1]
+        match tmp:
+            case "cow":
+                return [i for i in self.cow if i.startswith(text)]
+            case "eyes":
+                return [i for i in self.eyes if i.startswith(text)]
+            case "tongue":
+                return [i for i in self.tongue if i.startswith(text)]
+            case _:
+                return [i for i in self.attributes if i.startswith(text)]
 
     def do_EOF(self, args):
         """
