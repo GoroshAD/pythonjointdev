@@ -7,7 +7,7 @@ class Cowsay(cmd.Cmd):
     in the command line.
     """
     prompt = "=)"
-    
+    _text = "text"
 
     def do_list_cows(self, args):
         """
@@ -39,6 +39,10 @@ class Cowsay(cmd.Cmd):
         """
         args = shlex.split(args)
         print(cowthink(**dict(zip(args[::2], args[1::2]))))
+
+    def complete_make_bubble(self, text, line, begidx, endidx):
+        if self._text.startswith(text):
+            return [self._text]
 
     def do_EOF(self, args):
         """
