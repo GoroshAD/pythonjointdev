@@ -60,6 +60,18 @@ class Cowsay(cmd.Cmd):
             case _:
                 return [i for i in self.attributes if i.startswith(text)]
 
+    def complete_cowthink(self, text, line, begidx, endidx):
+        tmp = shlex.split(line)[-2 if text else -1]
+        match tmp:
+            case "cow":
+                return [i for i in self.cow if i.startswith(text)]
+            case "eyes":
+                return [i for i in self.eyes if i.startswith(text)]
+            case "tongue":
+                return [i for i in self.tongue if i.startswith(text)]
+            case _:
+                return [i for i in self.attributes if i.startswith(text)]
+
     def do_EOF(self, args):
         """
         End the commands with EOF.
