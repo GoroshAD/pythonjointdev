@@ -33,7 +33,7 @@ async def chat(reader, writer):
                             continue
                         my_id = commands[1]
                         users[my_id] = my_queue
-                        print(f"{me} my id is {my_id}")
+                        print(f"{me}: my id is {my_id}")
                         writer.write(f"Your id now is {my_id}.\n".encode())
 
                     case "who":
