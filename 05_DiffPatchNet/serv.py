@@ -1,5 +1,5 @@
 import asyncio
-from cowsay import list_cows
+from cowsay import list_cows, cowsay
 import shlex
 
 users = {}
@@ -22,6 +22,9 @@ async def chat(reader, writer):
                 commands = shlex.split(q.result().decode())
                 match commands[0]:
                     case "login":
+                        if len(commands) != 2:
+                            writer.write("Invalid arguments.\n".encode())
+                            continue
                         if commands[1] not in list_cows():
                             writer.write("Error: use 'cows' to see existing login name.\n".encode())
                             continue
@@ -34,11 +37,35 @@ async def chat(reader, writer):
                         writer.write(f"Your id now is {my_id}.\n".encode())
 
                     case "who":
+                        if len(commands) != 1:
+                            writer.write("Invalid arguments.\n".encode())
+                            continue
+                        print(f"{me}: using who command")
                         writer.write(("Online users are:\n" + " ".join(users.keys()) + "\n").encode())
 
                     case "cows":
+                        if len(commands) != 1:
+                            writer.write("Invalid arguments.\n".encode())
+                            continue
+                        print(f"{me}: using cows command")
                         writer.write(("Available logins are:\n" + " ".join(list(set(list_cows()) \
                                 - set(users.keys()))) + "\n").encode())
+
+                    case "say":
+                        if my_id is None:
+                            print(f"{me}: trying to use say command without login")
+                            writer.write(("You have no rights here, please login.\n").encode())
+                            continue
+                        if len(commands) != 3:
+                            writer.write("Invalid arguments.\n".encode())
+                            continue
+                        if commands[1] not in users.keys():
+                            writer.write("There is no user with this name here.\n".encode())
+                            continue
+                        print(f"{me}: saying smth to {commands[1]}")
+                        await users[commands[1]].put(f"\n{cowsay(commands[2], cow=my_id)}")
+
+
 
                     case _:
                         continue
