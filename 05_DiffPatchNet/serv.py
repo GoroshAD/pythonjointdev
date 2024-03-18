@@ -32,8 +32,14 @@ async def chat(reader, writer):
                         users[my_id] = my_queue
                         print(f"{me} my id is {my_id}")
                         writer.write(f"Your id now is {my_id}.\n".encode())
+
                     case "who":
                         writer.write(("Online users are:\n" + " ".join(users.keys()) + "\n").encode())
+
+                    case "cows":
+                        writer.write(("Available logins are:\n" + " ".join(list(set(list_cows()) \
+                                - set(users.keys()))) + "\n").encode())
+
                     case _:
                         continue
                                 
