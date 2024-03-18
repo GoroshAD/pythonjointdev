@@ -62,6 +62,7 @@ class Cowsay(cmd.Cmd):
 
     def complete_cowthink(self, text, line, begidx, endidx):
         tmp = shlex.split(line)[-2 if text else -1]
+        print(tmp)
         match tmp:
             case "cow":
                 return [i for i in self.cow if i.startswith(text)]
