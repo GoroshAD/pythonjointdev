@@ -63,14 +63,24 @@ async def chat(reader, writer):
                             writer.write("There is no user with this name here.\n".encode())
                             continue
                         print(f"{me}: saying smth to {commands[1]}")
-                        await users[commands[1]].put(f"\n{cowsay(commands[2], cow=my_id)}")
+                        await users[commands[1]].put(f"\n{cowsay(commands[2], cow=my_id)}\n")
 
-
+                    case "yield":
+                        if my_id is None:
+                            print(f"{me}: trying to use yield command without login")
+                            writer.write(("You have no rights here, please login.\n").encode())
+                            continue
+                        if len(commands) != 2:
+                            writer.write("Invalid arguments.\n".encode())
+                            continue
+                        print(f"{me}: yielding smth")
+                        for out in users.values():
+                            if out is not users[my_id]:
+                                await out.put(f"\n{cowsay(commands[1], cow=my_id)}\n")
 
                     case _:
                         continue
                                 
-
             elif q is receive:
                 receive = asyncio.create_task(my_queue.get())
                 writer.write(f"{q.result()}\n".encode())
