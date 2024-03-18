@@ -78,6 +78,14 @@ async def chat(reader, writer):
                             if out is not users[my_id]:
                                 await out.put(f"\n{cowsay(commands[1], cow=my_id)}\n")
 
+                    case "quit":
+                        if len(commands) != 1:
+                            writer.write(("Well, this is incorrect usage of the command, but okay...\n").encode())
+                        print(f"{me}: logs out")
+                        writer.write(("You are logged out now.\n").encode())
+                        del user[my_id]
+                        my_id = None
+
                     case _:
                         continue
                                 
