@@ -24,6 +24,10 @@ class Cowchat(cmd.Cmd):
         req = Thread(target = sender, args = (self, self.sock, "who"))
         req.start()
 
+    def do_cows(self, args):
+        req = Thread(target = sender, args = (self, self.sock, "cows"))
+        req.start()
+
     def do_EOF(self, args):
         return True
 
