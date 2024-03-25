@@ -2,10 +2,12 @@ import sys
 import socket
 import cmd
 from threading import Thread
+import readline
+import shlex
 
 def sender(client, sock, commands):
     sock.sendall(commands.encode())
-    res =sock.recv(1024).rstrip().decode()
+    res = sock.recv(1024).rstrip().decode()
     print(f"\n{res}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)
 
 
@@ -21,12 +23,21 @@ class Cowchat(cmd.Cmd):
         return super().__init__()
 
     def do_who(self, args):
-        req = Thread(target = sender, args = (self, self.sock, "who"))
+        req = Thread(target = sender, args = (self, self.sock, "who\n"))
         req.start()
 
     def do_cows(self, args):
-        req = Thread(target = sender, args = (self, self.sock, "cows"))
+        req = Thread(target = sender, args = (self, self.sock, "cows\n"))
         req.start()
+
+    def do_login(self, args):
+        req = Thread(target = sender, args = (self, self.sock, f"login {args}\n"))
+        req.start()
+
+    def complete_login(self, text, line, begidx, endidx):
+        self.sock.sendall("cows\n".encode())
+        logins = shlex.split(self.sock.recv(1024).rstrip().decode())[3:]
+        return [c for c in logins if c.startswith(text)]
 
     def do_EOF(self, args):
         return True
