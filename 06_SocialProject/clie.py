@@ -5,10 +5,15 @@ from threading import Thread
 import readline
 import shlex
 
+def receiver(client, sock):
+    while True:
+        res = sock.recv(1024).rstrip().decode()
+        print(f"\n{res}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)
+
 def sender(client, sock, commands):
     sock.sendall(commands.encode())
-    res = sock.recv(1024).rstrip().decode()
-    print(f"\n{res}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)
+    '''res = sock.recv(1024).rstrip().decode()
+    print(f"\n{res}\n{client.prompt}{readline.get_line_buffer()}", end="", flush=True)'''
 
 
 class Cowchat(cmd.Cmd):
@@ -17,9 +22,12 @@ class Cowchat(cmd.Cmd):
     """
     prompt = "=)"
     sock = 0
+    recei = 0
 
     def __init__(self, sock):
         self.sock = sock
+        self.recei = Thread(target=receiver, args=(self, self.sock))
+        self.recei.start()
         return super().__init__()
 
     def do_who(self, args):
