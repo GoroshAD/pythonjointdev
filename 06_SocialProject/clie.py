@@ -40,13 +40,22 @@ class Cowchat(cmd.Cmd):
         return [c for c in logins if c.startswith(text)]
 
     def do_say(self, args):
-        req = Thread(target = sender, args = (self, self.sock, f"say {args}\n"))
+        rec, args = shlex.split(args)
+        req = Thread(target = sender, args = (self, self.sock, f"say {rec} {args}\n"))
         req.start()
 
     def complete_say(self, text, line, begidx, endidx):
         self.sock.sendall("who\n".encode())
         logins = shlex.split(self.sock.recv(1024).rstrip().decode())[3:]
         return [c for c in logins if c.startswith(text)]
+
+    def do_yield(self, args):
+        req = Thread(target = sender, args = (self, self.sock, f"yield {args}\n"))
+        req.start()
+
+    def do_quit(self, args):
+        req = Thread(target = sender, args = (self, self.sock, f"quit\n"))
+        req.start()
 
     def do_EOF(self, args):
         return True
